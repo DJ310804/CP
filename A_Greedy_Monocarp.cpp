@@ -1,7 +1,10 @@
 // Code By DJ
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 
 using namespace std;
+using namespace __gnu_pbds;
 
 #define int long long
 
@@ -13,8 +16,8 @@ using vi = vector<int>;
 using vvi = vector<vector<int>>;
 using vpii = vector<pii>;
 
-inline void yes() { cout << "YES" << endl; }
-inline void no() { cout << "NO" << endl; }
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+// order_of_key, find_by_order
 
 template<typename Container>
 void printContainer(const Container& container) {
@@ -24,25 +27,11 @@ void printContainer(const Container& container) {
     cout << endl;
 }
 
-void pre(vector<int>& pref, const vector<int>& arr) {
-    pref[0] = arr[0];
-    for (size_t i = 1; i < arr.size(); ++i) {
-        pref[i] = pref[i - 1] + arr[i];
-    }
-}
-
-void preone(vector<int>& pref, const vector<int>& arr) {
-    pref[0] = 0;
-    for (size_t i = 1; i <= arr.size(); ++i) {
-        pref[i] = pref[i - 1] + arr[i - 1];
-    }
-}
-
-inline int getMSB(int n) {
+int getMSB(int n) {
     return n == 0 ? 0 : 1 << (31 - __builtin_clz(n));
 }
 
-inline int pow(int x, int y) {
+int pow(int x, int y) {
     int res = 1;
     while (y > 0) {
         if (y & 1) res *= x;
@@ -52,7 +41,7 @@ inline int pow(int x, int y) {
     return res;
 }
 
-inline int mod_pow(int x, int y, int mod) {
+int mod_pow(int x, int y, int mod) {
     int res = 1;
     while (y > 0) {
         if (y & 1) res = (res * x) % mod;
@@ -62,22 +51,29 @@ inline int mod_pow(int x, int y, int mod) {
     return res;
 }
 
-inline int mod_div(int p, int q) {
+int mod_div(int p, int q) {
     return (p % MOD) * mod_pow(q, MOD - 2, MOD) % MOD;
 }
 
-vi fact;
+vi fact(1, 1);
 
-inline int ncr(int n, int r) {
+void precompute_factorials(int n) {
+    for (int i = fact.size(); i <= n; ++i) {
+        fact.push_back(fact.back() * i % MOD);
+    }
+}
+
+int ncr(int n, int r) {
     if (r > n) return 0;
+    precompute_factorials(n);
     return mod_div(fact[n], fact[n - r] * fact[r] % MOD);
 }
 
-inline int lcm(int a, int b) {
+int lcm(int a, int b) {
     return (a * b) / __gcd(a, b);
 }
 
-inline bool isPrime(int n) {
+bool isPrime(int n) {
     if (n <= 1) return false;
     if (n == 2) return true;
     if (n % 2 == 0) return false;
@@ -87,11 +83,11 @@ inline bool isPrime(int n) {
     return true;
 }
 
-inline int ceil(int a, int b) {
+int ceil(int a, int b) {
     return (a + b - 1) / b;
 }
 
-inline int comnSuff(int a, int b) {
+int comnSuff(int a, int b) {
     for (int i = 0; i < 30; ++i) {
         if ((a & (1 << i)) != (b & (1 << i))) {
             return i;
@@ -100,57 +96,29 @@ inline int comnSuff(int a, int b) {
     return 30;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
-
 void solve() {
-    int n,k,q;
-    cin >> n>>k>>q;
-
-    vvi a(n,vi(k));
+    int n,k;
+    cin >> n>>k;
+    multiset<int> m;
+    int t;
     for(int i=0;i<n;i++){
-        for(int j=0;j<k;j++){
-            cin>>a[i][j];
+        cin>>t;
+        m.insert(t);
+    }
+int sum=0;
+    while(!m.empty() && sum<k){
+        sum+=*m.rbegin();
+        if(sum>k){
+            sum-=*m.rbegin();
+            cout<<k-sum<<"\n";
+            return;
         }
+        m.erase(--m.end());
     }
 
-    for(int j=0;j<k;j++){
-        for(int i=1;i<n;i++){
-            a[i][j]=a[i][j] | a[i-1][j];
-        }
-    }
-    int m;
-    while(q--){
-        cin>>m;
-
-        int r,c;
-        char o;
-        int  left_pos = 0, right_pos = n - 1;
-        while(m--){
-            cin>>r>>o>>c;
-            r--;
-        
-			if (o == '<') {
-				int le = -1, ri = n, mid;
-				while (le + 1 != ri) {
-					mid = (le + ri) / 2;
-					if (a[mid][r] < c) le = mid;
-					else ri = mid;
-				}
-				if (le < right_pos) right_pos = le;
-			} else {
-				int le = -1, ri = n, mid;
-				while (le + 1 != ri) {
-					mid = (le + ri) / 2;
-					if (a[mid][r] <= c) le = mid;
-					else ri = mid;
-				}
-				if (ri > left_pos) left_pos = ri;
-			}
-		}
-		if (left_pos <= right_pos) cout<<left_pos + 1<<"\n";
-		else cout<<"-1\n";
-    }
+    cout<<k-sum<<"\n";
+    return;
 }
-
 
 signed main() {
     // cout << fixed << setprecision(10);
@@ -158,12 +126,10 @@ signed main() {
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int t=1;
-    // cin >> t;
+    int t = 1;
+    cin >> t;
     while (t--) {
         solve();
     }
     return 0;
 }
-
-// __lg(r) for log base 2
