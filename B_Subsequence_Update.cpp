@@ -17,7 +17,7 @@ using vvi = vector<vector<int>>;
 using vpii = vector<pii>;
 
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-// order_of_key,find_by_order
+// order_of_key, find_by_order
 
 template<typename Container>
 void printContainer(const Container& container) {
@@ -55,10 +55,17 @@ int mod_div(int p, int q) {
     return (p % MOD) * mod_pow(q, MOD - 2, MOD) % MOD;
 }
 
-vi fact;
+vi fact(1, 1);
+
+void precompute_factorials(int n) {
+    for (int i = fact.size(); i <= n; ++i) {
+        fact.push_back(fact.back() * i % MOD);
+    }
+}
 
 int ncr(int n, int r) {
     if (r > n) return 0;
+    precompute_factorials(n);
     return mod_div(fact[n], fact[n - r] * fact[r] % MOD);
 }
 
@@ -91,41 +98,78 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n;
-    cin >> n;
-    vector<pair<pii,int>> v(n);
-    for(int i=0;i<n;i++){
-        int a,b;
-        cin>>a>>b;
+    int n, l, r;
+    cin >> n >> l >> r;
+    l--; // zero-index
+    r--; // zero-index
 
-        v[i]={{a,b},i};
+    vector<int> L, R, M;
+    int t, m = r - l + 1;
+
+    // Read elements for L
+    for (int i = 0; i < l; ++i) {
+        cin >> t;
+        L.push_back(t);
     }
 
-    sort(v.begin(),v.end(),[&](pair<pii,int> a,pair<pii,int> b){
-        return a.first.second <= b.first.second;
-    });
-
-    multiset<int> all;
-    vector<int> ans;
-
-    all.insert(v[0].first.second);
-    ans[v[0].second]=1;
-
-    for(int i=1;i<n;i++){
-        int a=v[i].first.first,b=v[i].first.second;
-        auto it=ans.lower_bound(a);
-        if(it!=ans.begin()){
-            ans.erase(prev(it));
-            ans.insert(b);
-        }
-        else{
-            ans.insert(b);
-        }
-        printContainer(ans);
+    // Read elements for M
+    for (int i = l; i <= r; ++i) {
+        cin >> t;
+        M.push_back(t);
     }
-    cout<<ans.size()<<"\n";
-    return;
+
+    // Read elements for R
+    for (int i = r + 1; i < n; ++i) {
+        cin >> t;
+        R.push_back(t);
+    }
+
+    // Debug prints (optional)
+    // cout << "L: "; printContainer(L);
+    // cout << "M: "; printContainer(M);
+    // cout << "R: "; printContainer(R);
+
+    // Sort L, M, R
+    sort(L.begin(), L.end());
+    sort(R.begin(), R.end());
+    sort(M.begin(), M.end());
+
+    int ans = accumulate(M.begin(), M.end(), 0LL);
+    int j = m - 1, sum = ans;
+
+    // Try to replace M's largest values with L's smaller values
+    for (int i = 0; i < L.size() && j >= 0; ++i) {
+        if (L[i] < M[j]) {
+            sum -= M[j];
+            sum += L[i];
+            j--;
+        } else {
+            break;
+        }
+    }
+
+    ans = min(ans, sum);
+
+    sum = accumulate(M.begin(), M.end(), 0LL);
+    j = m - 1;
+
+    // Try to replace M's largest values with R's smaller values
+    for (int i = 0; i < R.size() && j >= 0; ++i) {
+        if (R[i] < M[j]) {
+            sum -= M[j];
+            sum += R[i];
+            j--;
+        } else {
+            break;
+        }
+    }
+
+    ans = min(ans, sum);
+
+    cout << ans << "\n";
 }
+
+
 
 signed main() {
     // cout << fixed << setprecision(10);
@@ -133,8 +177,8 @@ signed main() {
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int t=1;
-    // cin >> t;
+    int t = 1;
+    cin >> t;
     while (t--) {
         solve();
     }

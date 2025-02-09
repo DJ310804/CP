@@ -17,12 +17,12 @@ using vvi = vector<vector<int>>;
 using vpii = vector<pii>;
 
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-// order_of_key,find_by_order
+// order_of_key, find_by_order
 
 template<typename Container>
 void printContainer(const Container& container) {
     for (const auto& item : container) {
-        cout << item << " ";
+        cout << item+1 << " ";
     }
     cout << endl;
 }
@@ -55,10 +55,17 @@ int mod_div(int p, int q) {
     return (p % MOD) * mod_pow(q, MOD - 2, MOD) % MOD;
 }
 
-vi fact;
+vi fact(1, 1);
+
+void precompute_factorials(int n) {
+    for (int i = fact.size(); i <= n; ++i) {
+        fact.push_back(fact.back() * i % MOD);
+    }
+}
 
 int ncr(int n, int r) {
     if (r > n) return 0;
+    precompute_factorials(n);
     return mod_div(fact[n], fact[n - r] * fact[r] % MOD);
 }
 
@@ -93,37 +100,30 @@ int comnSuff(int a, int b) {
 void solve() {
     int n;
     cin >> n;
-    vector<pair<pii,int>> v(n);
+    vi s(n);
+    for (auto &i : s) cin >> i;
+
+    vi ans(n);
     for(int i=0;i<n;i++){
-        int a,b;
-        cin>>a>>b;
-
-        v[i]={{a,b},i};
-    }
-
-    sort(v.begin(),v.end(),[&](pair<pii,int> a,pair<pii,int> b){
-        return a.first.second <= b.first.second;
-    });
-
-    multiset<int> all;
-    vector<int> ans;
-
-    all.insert(v[0].first.second);
-    ans[v[0].second]=1;
-
-    for(int i=1;i<n;i++){
-        int a=v[i].first.first,b=v[i].first.second;
-        auto it=ans.lower_bound(a);
-        if(it!=ans.begin()){
-            ans.erase(prev(it));
-            ans.insert(b);
+        if(i==n-1){
+            cout<<-1<<"\n";
+            return;
         }
-        else{
-            ans.insert(b);
+        int e=s[i],j=i+1;
+        if(s[j]!=s[i]){
+            cout<<-1<<"\n";
+            return;
         }
-        printContainer(ans);
+        for(j=i+2;j<n;j++){
+            if(e!=s[j]) break;
+        }
+        ans[j-1]=i;
+
+        while(i<j-1){
+            ans[i]=++i;
+        }
     }
-    cout<<ans.size()<<"\n";
+    printContainer(ans);
     return;
 }
 
@@ -133,8 +133,8 @@ signed main() {
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int t=1;
-    // cin >> t;
+    int t = 1;
+    cin >> t;
     while (t--) {
         solve();
     }

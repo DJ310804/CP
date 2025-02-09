@@ -17,7 +17,7 @@ using vvi = vector<vector<int>>;
 using vpii = vector<pii>;
 
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-// order_of_key,find_by_order
+// order_of_key, find_by_order
 
 template<typename Container>
 void printContainer(const Container& container) {
@@ -55,10 +55,17 @@ int mod_div(int p, int q) {
     return (p % MOD) * mod_pow(q, MOD - 2, MOD) % MOD;
 }
 
-vi fact;
+vi fact(1, 1);
+
+void precompute_factorials(int n) {
+    for (int i = fact.size(); i <= n; ++i) {
+        fact.push_back(fact.back() * i % MOD);
+    }
+}
 
 int ncr(int n, int r) {
     if (r > n) return 0;
+    precompute_factorials(n);
     return mod_div(fact[n], fact[n - r] * fact[r] % MOD);
 }
 
@@ -89,41 +96,47 @@ int comnSuff(int a, int b) {
     return 30;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
-
 void solve() {
-    int n;
-    cin >> n;
-    vector<pair<pii,int>> v(n);
+    int n,m;
+    cin >> n>>m;
+    vector<vector<char>> v(n,vector<char>(m,' '));
     for(int i=0;i<n;i++){
-        int a,b;
-        cin>>a>>b;
-
-        v[i]={{a,b},i};
-    }
-
-    sort(v.begin(),v.end(),[&](pair<pii,int> a,pair<pii,int> b){
-        return a.first.second <= b.first.second;
-    });
-
-    multiset<int> all;
-    vector<int> ans;
-
-    all.insert(v[0].first.second);
-    ans[v[0].second]=1;
-
-    for(int i=1;i<n;i++){
-        int a=v[i].first.first,b=v[i].first.second;
-        auto it=ans.lower_bound(a);
-        if(it!=ans.begin()){
-            ans.erase(prev(it));
-            ans.insert(b);
+        for(int j=0;j<m;j++){
+            cin>>v[i][j];
         }
-        else{
-            ans.insert(b);
-        }
-        printContainer(ans);
     }
-    cout<<ans.size()<<"\n";
+    int ans=0;
+    
+    vector<pair<int, int>> dirs = {
+        {1, 0}, {-1, 0}, {0, 1}, {0, -1}
+    };
+
+    auto bfs = [&](int i, int j) -> void {
+        queue<pair<int, int>> q;
+        q.push({i, j});
+        v[i][j] = '#';
+        while (!q.empty()) {
+            pair<int, int> t = q.front();
+            q.pop();
+            for (auto &dir : dirs) {
+                int ni = t.first + dir.first, nj = t.second + dir.second;
+                if (ni >= 0 && nj >= 0 && ni < n && nj < m && v[ni][nj] != '#') {
+                    v[ni][nj] = '#';
+                    q.push({ni, nj});
+                }
+            }
+        }
+    };
+
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            if(v[i][j]=='.'){
+                ans++;
+                bfs(i,j);
+            }
+        }
+    }
+    cout<<ans<<"\n";
     return;
 }
 
@@ -133,7 +146,7 @@ signed main() {
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int t=1;
+    int t = 1;
     // cin >> t;
     while (t--) {
         solve();

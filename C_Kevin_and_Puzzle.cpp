@@ -8,7 +8,7 @@ using namespace __gnu_pbds;
 
 #define int long long
 
-constexpr int MOD = 1000000007;
+constexpr int MOD = 998244353;
 constexpr int INF = 0x7fffffffffffffff;
 
 using pii = pair<int, int>;
@@ -17,7 +17,7 @@ using vvi = vector<vector<int>>;
 using vpii = vector<pii>;
 
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-// order_of_key,find_by_order
+// order_of_key, find_by_order
 
 template<typename Container>
 void printContainer(const Container& container) {
@@ -55,10 +55,17 @@ int mod_div(int p, int q) {
     return (p % MOD) * mod_pow(q, MOD - 2, MOD) % MOD;
 }
 
-vi fact;
+vi fact(1, 1);
+
+void precompute_factorials(int n) {
+    for (int i = fact.size(); i <= n; ++i) {
+        fact.push_back(fact.back() * i % MOD);
+    }
+}
 
 int ncr(int n, int r) {
     if (r > n) return 0;
+    precompute_factorials(n);
     return mod_div(fact[n], fact[n - r] * fact[r] % MOD);
 }
 
@@ -93,48 +100,44 @@ int comnSuff(int a, int b) {
 void solve() {
     int n;
     cin >> n;
-    vector<pair<pii,int>> v(n);
-    for(int i=0;i<n;i++){
-        int a,b;
-        cin>>a>>b;
-
-        v[i]={{a,b},i};
-    }
-
-    sort(v.begin(),v.end(),[&](pair<pii,int> a,pair<pii,int> b){
-        return a.first.second <= b.first.second;
-    });
-
-    multiset<int> all;
-    vector<int> ans;
-
-    all.insert(v[0].first.second);
-    ans[v[0].second]=1;
-
-    for(int i=1;i<n;i++){
-        int a=v[i].first.first,b=v[i].first.second;
-        auto it=ans.lower_bound(a);
-        if(it!=ans.begin()){
-            ans.erase(prev(it));
-            ans.insert(b);
+    vi v(n);
+    for (auto &i : v) cin >> i;
+    if(n==1){
+        if(v[0]==0){
+            cout<<"2\n";
         }
         else{
-            ans.insert(b);
+            cout<<"1\n";
         }
-        printContainer(ans);
+        return;
     }
-    cout<<ans.size()<<"\n";
+
+    map<vi,int> odp;
+    if(v[0]!=0){
+        odp[{1,1}]=1;
+    }
+    else{
+        odp[{0,0}]=1;
+        odp[{1,1}]=1;
+    }
+
+    for(int i=1;i<n;i++){
+        map<vi,int> ndp;
+        ndp[{v[i],0}]=odp[{v[i],0}]%MOD+odp[{v[i],1}]%MOD;
+        ndp[{v[i-1]+1,1}]=odp[{v[i-1],0}];
+        odp=ndp;
+    }
+    cout<<(odp[{v[n-1],0}]+odp[{v[n-2]+1,1}])%MOD<<"\n";
     return;
 }
-
 signed main() {
     // cout << fixed << setprecision(10);
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int t=1;
-    // cin >> t;
+    int t = 1;
+    cin >> t;
     while (t--) {
         solve();
     }

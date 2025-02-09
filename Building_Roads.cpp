@@ -17,7 +17,7 @@ using vvi = vector<vector<int>>;
 using vpii = vector<pii>;
 
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-// order_of_key,find_by_order
+// order_of_key, find_by_order
 
 template<typename Container>
 void printContainer(const Container& container) {
@@ -55,10 +55,17 @@ int mod_div(int p, int q) {
     return (p % MOD) * mod_pow(q, MOD - 2, MOD) % MOD;
 }
 
-vi fact;
+vi fact(1, 1);
+
+void precompute_factorials(int n) {
+    for (int i = fact.size(); i <= n; ++i) {
+        fact.push_back(fact.back() * i % MOD);
+    }
+}
 
 int ncr(int n, int r) {
     if (r > n) return 0;
+    precompute_factorials(n);
     return mod_div(fact[n], fact[n - r] * fact[r] % MOD);
 }
 
@@ -90,42 +97,91 @@ int comnSuff(int a, int b) {
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
-void solve() {
-    int n;
-    cin >> n;
-    vector<pair<pii,int>> v(n);
-    for(int i=0;i<n;i++){
-        int a,b;
-        cin>>a>>b;
+// void solve() {
+//     int n, m;
+//     cin >> n >> m;
+//     vector<int> adj[n + 1];
+//     for (int i = 1; i <= m; i++) {
+//         int a, b;
+//         cin >> a >> b;
+//         adj[a].push_back(b);
+//         adj[b].push_back(a);
+//     }
+//     vector<int> visited(n + 1, 0);
+//     int ans = 0;
 
-        v[i]={{a,b},i};
+//     function<void(int)> dfs = [&](int i) {
+//         visited[i] = 1;
+//         for (auto &a : adj[i]) {
+//             if (!visited[a]) {
+//                 dfs(a);
+//             }
+//         }
+//     };
+
+//     vector<pair<int, int>> ps;
+//     for (int i = 1; i <= n; i++) {
+//         if (!visited[i]) {
+//             dfs(i);
+//             if (i > 1) ps.push_back({i - 1, i});
+//             ans++;
+//         }
+//     }
+//     cout << ans-1 << "\n";
+//     for (auto &a : ps) {
+//         cout << a.first << " " << a.second << "\n";
+//     }
+// }
+
+vector<int> parent;
+int find(int i){
+    if(parent[i]==i)return i;
+    return parent[i]=find(parent[i]);
+}
+
+void unions(int x,int y){
+    int px=find(x);
+    int py=find(y);
+
+    if(px!=py){
+        parent[px]=py;
     }
-
-    sort(v.begin(),v.end(),[&](pair<pii,int> a,pair<pii,int> b){
-        return a.first.second <= b.first.second;
-    });
-
-    multiset<int> all;
-    vector<int> ans;
-
-    all.insert(v[0].first.second);
-    ans[v[0].second]=1;
-
-    for(int i=1;i<n;i++){
-        int a=v[i].first.first,b=v[i].first.second;
-        auto it=ans.lower_bound(a);
-        if(it!=ans.begin()){
-            ans.erase(prev(it));
-            ans.insert(b);
-        }
-        else{
-            ans.insert(b);
-        }
-        printContainer(ans);
-    }
-    cout<<ans.size()<<"\n";
     return;
 }
+
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    parent.resize(n+1);
+    for(int i=1;i<=n;i++){
+        parent[i]=i;
+    }
+
+    vector<int> adj[n + 1];
+    for (int i = 1; i <= m; i++) {
+        int a, b;
+        cin >> a >> b;
+        unions(a,b);
+    }
+    for(int i=1;i<=n;i++){
+        parent[i]=find(i);
+    }
+    // printContainer(parent);
+    set<int> s;
+    for(int i=1;i<=n;i++){
+        s.insert(parent[i]);
+    }
+    cout<<s.size()-1<<"\n";
+    auto it = ++s.begin();
+    while (it != s.end()) {
+        if (it != s.end()) {
+            cout << *s.begin() << " " << *it << "\n";
+            ++it; 
+        }
+    }
+    return;
+}
+
 
 signed main() {
     // cout << fixed << setprecision(10);
@@ -133,7 +189,7 @@ signed main() {
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int t=1;
+    int t = 1;
     // cin >> t;
     while (t--) {
         solve();

@@ -17,7 +17,7 @@ using vvi = vector<vector<int>>;
 using vpii = vector<pii>;
 
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-// order_of_key,find_by_order
+// order_of_key, find_by_order
 
 template<typename Container>
 void printContainer(const Container& container) {
@@ -55,10 +55,17 @@ int mod_div(int p, int q) {
     return (p % MOD) * mod_pow(q, MOD - 2, MOD) % MOD;
 }
 
-vi fact;
+vi fact(1, 1);
+
+void precompute_factorials(int n) {
+    for (int i = fact.size(); i <= n; ++i) {
+        fact.push_back(fact.back() * i % MOD);
+    }
+}
 
 int ncr(int n, int r) {
     if (r > n) return 0;
+    precompute_factorials(n);
     return mod_div(fact[n], fact[n - r] * fact[r] % MOD);
 }
 
@@ -93,37 +100,51 @@ int comnSuff(int a, int b) {
 void solve() {
     int n;
     cin >> n;
-    vector<pair<pii,int>> v(n);
+    vi mp(n,0); // indegree
+    vector<string> v(n);
+    for(auto &s:v)cin>>s;
+
+    vector<int> adj[n];
+    
     for(int i=0;i<n;i++){
-        int a,b;
-        cin>>a>>b;
-
-        v[i]={{a,b},i};
+        for(int j=0;j<i;j++){
+            if(v[i][j] == '1'){
+                mp[i]++;
+                adj[j].push_back(i);
+            }
+        }
+    }
+    // printContainer(mp);
+    
+    queue<int> q;
+    for(int i=n-1;i>-1;i--){
+        if(mp[i]==0)q.push(i);
     }
 
-    sort(v.begin(),v.end(),[&](pair<pii,int> a,pair<pii,int> b){
-        return a.first.second <= b.first.second;
-    });
+    vi visited(n,0);
+    vi ans;
 
-    multiset<int> all;
-    vector<int> ans;
-
-    all.insert(v[0].first.second);
-    ans[v[0].second]=1;
-
-    for(int i=1;i<n;i++){
-        int a=v[i].first.first,b=v[i].first.second;
-        auto it=ans.lower_bound(a);
-        if(it!=ans.begin()){
-            ans.erase(prev(it));
-            ans.insert(b);
+    while(!q.empty()){
+        int nq=q.size();
+        vi temp;
+        while(nq--){
+            int t=q.front();
+            q.pop();
+            temp.push_back(t+1);
+            visited[t]=1;
+            for(auto &a:adj[t]){
+                if(!visited[a]){
+                    mp[a]--;
+                    if(mp[a]==0){
+                        q.push(a);
+                    }
+                }
+            }
         }
-        else{
-            ans.insert(b);
-        }
-        printContainer(ans);
+        sort(temp.rbegin(),temp.rend());
+        for(auto &a:temp)ans.push_back(a);
     }
-    cout<<ans.size()<<"\n";
+    printContainer(ans);
     return;
 }
 
@@ -133,8 +154,8 @@ signed main() {
     cin.tie(nullptr);
     cout.tie(nullptr);
 
-    int t=1;
-    // cin >> t;
+    int t = 1;
+    cin >> t;
     while (t--) {
         solve();
     }
