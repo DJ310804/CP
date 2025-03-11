@@ -97,16 +97,35 @@ int comnSuff(int a, int b) {
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
-void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
+bool isps(int s){
+    int sq=sqrt(s);
+    return sq*sq==s;
+}
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+void solve() {
+    int n;
+    cin >> n;
+   
+    int s=n*(n+1)/2;
+    if(isps(s)){
+        cout<<"-1\n";
+        return;
     }
+
+    cout<<"2 1 ";
+    int sum=3;
+    for(int i=3;i<=n;i++){
+        sum+=i;
+        if(isps(sum)){
+            sum+=i+1;
+            cout<<i+1<<" "<<i<<" ";
+            i++;
+        }
+        else
+            cout<<i<<" ";
+    }
+    cout<<"\n";
+    return;
 }
 
 signed main() {

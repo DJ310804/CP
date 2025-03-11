@@ -102,7 +102,16 @@ void solve() {
     cin >> n>>x;
     vi v(n);
     for (auto &i : v) cin >> i;
-    
+
+    float sum=accumulate(v.begin(),v.end(),0);
+    sum/=n;
+    if(sum == x){
+        cout<<"YES\n";
+    }
+    else{
+        cout<<"NO\n";
+    }
+    return;
 }
 
 signed main() {
@@ -112,7 +121,7 @@ signed main() {
     cout.tie(nullptr);
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) {
         solve();
     }

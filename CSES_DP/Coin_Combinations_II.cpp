@@ -98,17 +98,22 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    int n, x;
+    cin >> n >> x;
+    vi c(n);
+    for (auto &coin : c) 
+        cin >> coin;
+    
+    vi dp(x+1,0);
+    dp[0]=1;
+    for(auto coin:c){
+        for(int t=coin;t<=x;t++){
+            dp[t]+=dp[t-coin]%MOD;
+        }
     }
+    cout << dp[x]%MOD << "\n";
+    
 }
-
 signed main() {
     // cout << fixed << setprecision(10);
     ios_base::sync_with_stdio(false);
@@ -116,7 +121,7 @@ signed main() {
     cout.tie(nullptr);
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) {
         solve();
     }

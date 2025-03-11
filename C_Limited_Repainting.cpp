@@ -96,17 +96,50 @@ int comnSuff(int a, int b) {
     return 30;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
-
-void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+bool canAchieve(int x, const string &s, const vector<int> &a, int k) {
+    int seg = 0;
+    int n = s.size();
+    bool f = false;
+    for (int i = 0; i < n; i++) {
+        if (a[i] > x && s[i] == 'R') {
+            f = false; 
+            continue;
+        }
+        if (a[i] > x && s[i] == 'B') {
+            if (!f) {
+                seg++;
+                f = true;
+            }
+        }
     }
+    return seg <= k;
+    
+}
+ 
+void solve() {
+    int n, k;
+    cin >> n >> k;
+    string s;
+    cin >> s;
+    vector<int> a(n);
+    int mp = 0;
+    for (int i = 0; i < n; i++){
+        cin >> a[i];
+        mp = max(mp, a[i]);
+    }
+
+    int lo = 0, hi = mp, ans = hi;
+    while(lo <= hi){
+        int mid = lo + (hi - lo) / 2;
+        if (canAchieve(mid, s, a, k)) {
+            ans = mid;
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
+        }
+    }
+    
+    cout << ans << "\n";
 }
 
 signed main() {
@@ -122,3 +155,6 @@ signed main() {
     }
     return 0;
 }
+
+
+

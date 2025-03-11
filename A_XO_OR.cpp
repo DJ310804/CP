@@ -98,15 +98,37 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
+    int n;
+    cin >> n;
+    vector<int> arr(n);
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    cout << "? 1 2 3" << endl;
+    int w; cin >> w;
+    cout << "? 1 2 4" << endl;
+    int x; cin >> x;
+    cout << "? 1 3 4" << endl;
+    int y; cin >> y;
+    cout << "? 2 3 4" << endl;
+    int z; cin >> z;
+    
+    int total = (w + x + y + z) / 3;
+    arr[0] = total - z; 
+    arr[1] = total - y; 
+    arr[2] = total - x; 
+    arr[3] = total - w; 
+    
+    for (int i = 4; i < n; ++i) {
+        cout << "? 1 2 " << (i + 1) << endl;
+        int sum;
+        cin >> sum;
+        arr[i] = sum - arr[0] - arr[1];
     }
+    
+    cout << "!";
+    for (int num : arr) {
+        cout << " " << num;
+    }
+    cout << endl;
 }
 
 signed main() {

@@ -98,17 +98,27 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
+    int n;
+    cin>>n;
+    
+    vi dp(n+1,n);
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    // dp[i] : number of min possible steps req to make it 0
+    // dp[i] = min(dp[i],1+dp[i-digit])
+
+    dp[0]=0;
+
+    for(int i=1;i<=n;i++){
+        string s=to_string(i);
+        for(auto &a:s){
+            int d=(a)-'0';
+            if(i>=d)
+                dp[i]=min(dp[i],1+dp[i-d]);
+        }
     }
+    cout<<dp[n]<<"\n";
+    return;
 }
-
 signed main() {
     // cout << fixed << setprecision(10);
     ios_base::sync_with_stdio(false);
@@ -116,7 +126,7 @@ signed main() {
     cout.tie(nullptr);
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) {
         solve();
     }

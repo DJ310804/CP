@@ -98,15 +98,22 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
+    int n,x;
+    cin >> n >>x;
     vi v(n);
     for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    
+    vi dp(x+1,INT_MAX);
+    dp[0]=0;
+    for(int i=1;i<=x;i++){
+        for(auto &coin:v){
+            if(i>=coin)
+                dp[i]=min(dp[i],1+dp[i-coin]);
+        }
     }
+    
+    dp[x]==INT_MAX ? cout<<-1<<"\n" : cout<<dp[x]<<"\n";
+    return;
 }
 
 signed main() {
@@ -116,7 +123,7 @@ signed main() {
     cout.tie(nullptr);
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) {
         solve();
     }

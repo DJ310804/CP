@@ -98,15 +98,21 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
+    int n;
+    cin >> n;
     vi v(n);
     for (auto &i : v) cin >> i;
+    int ans=0;
+    int a=*min_element(v.begin(),v.end());
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    for(int i=0;i<n;i++){
+        if(a!=v[i]){
+            ans++;
+        }
     }
+    ans+=a*n;
+    cout<<ans<<"\n";
+    return;
 }
 
 signed main() {

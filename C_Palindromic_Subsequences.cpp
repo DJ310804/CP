@@ -100,8 +100,12 @@ int comnSuff(int a, int b) {
 void solve() {
     int n;
     cin >> n;
-    // vi v(n);
-    // for (auto &i : v) cin >> i;
+    cout<<"1 1 ";
+    for(int i=n-2;i>0;i--){
+        cout<<i<<" ";
+    }
+    cout<<"\n";
+    return;
 }
 
 signed main() {

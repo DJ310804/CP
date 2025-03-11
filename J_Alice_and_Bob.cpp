@@ -98,15 +98,33 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
+    int n;
+    cin >> n;
     vi v(n);
     for (auto &i : v) cin >> i;
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    vi pref(n);
+    pref[0] = v[0];
+    for (int i = 1; i < n; i++) {
+        pref[i] = __gcd(pref[i - 1], v[i]);
     }
+    
+    vi suff(n);
+    suff[n - 1] = v[n - 1];
+    for (int i = n - 2; i >= 0; i--) {
+        suff[i] = __gcd(v[i], suff[i + 1]);
+    }
+    int ans=INT_MIN;
+    for (int i = 0; i < n; i++) {
+        if (i == 0)
+            ans=max(suff[1],ans);
+        else if (i == n - 1)
+            ans=max(ans,pref[n-2]);
+        else
+            ans=max(ans,__gcd(pref[i - 1], suff[i + 1]));
+    }
+    cout<<ans<<"\n";
+    return;
 }
 
 signed main() {

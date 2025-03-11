@@ -96,23 +96,60 @@ int comnSuff(int a, int b) {
     return 30;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
+#include <iostream>
+using namespace std;
 
 void solve() {
     int n;
     cin >> n;
-    // dp[i]=dp[i-1]+dp[i-2]+..dp[i-6]
-    // dp[0]=1;
-    vi dp(n+1,0);
-    dp[0]=1;
-    for(int i=1;i<=n;i++){
-        for(int j=1;j<=6;j++){
-            if(i>=j)
-                dp[i]+=dp[i-j];
+    string s;
+    cin >> s;
+
+    if (n % 2 == 1) {
+        cout << "NO\n";
+        return;
+    }
+
+    int x = 0, y = 0;
+    for (char c : s) {
+        if (c == 'N') y++;
+        else if (c == 'S') y--;
+        else if (c == 'E') x++;
+        else if (c == 'W') x--;
+    }
+
+    if (x % 2 != 0 || y % 2 != 0) {
+        cout << "NO\n";
+        return;
+    }
+
+    string ans(n, 'R');
+    if (x == 0 && y == 0) {
+        if (n == 2) {
+            cout << "NO\n";
+            return;
+        }
+        ans[0] = 'H';
+        ans[s.find(s[0] == 'N' ? 'S' : s[0] == 'S' ? 'N' : s[0] == 'E' ? 'W' : 'E')] = 'H';
+    } else {
+        for (int i = 0; i < n; i++) {
+            if (s[i] == 'N' && y > 0) {
+                y -= 2;
+                ans[i] = 'H';
+            } else if (s[i] == 'S' && y < 0) {
+                y += 2;
+                ans[i] = 'H';
+            } else if (s[i] == 'E' && x > 0) {
+                x -= 2;
+                ans[i] = 'H';
+            } else if (s[i] == 'W' && x < 0) {
+                x += 2;
+                ans[i] = 'H';
+            }
         }
     }
-    // printContainer(dp);
-    cout<<dp[n]<<"\n";
-    return;
+
+    cout << ans << "\n";
 }
 
 signed main() {
@@ -122,7 +159,7 @@ signed main() {
     cout.tie(nullptr);
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) {
         solve();
     }

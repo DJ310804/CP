@@ -96,29 +96,32 @@ int comnSuff(int a, int b) {
     return 30;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
+vvi dp(1000001, vi(3, 0));
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
-    }
+    int n;
+    cin >> n;
+    cout << (dp[n][1] + dp[n][2]) % MOD << "\n";
 }
 
 signed main() {
-    // cout << fixed << setprecision(10);
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    cout.tie(nullptr);
-
-    int t = 1;
+    
+    int t;
     cin >> t;
+
+    dp[1][1] = 1;
+    dp[1][2] = 1;
+
+    for (int i = 2; i <= 1000000; i++) {
+        dp[i][1] = (2LL * dp[i-1][1] % MOD + dp[i-1][2]) % MOD;
+        dp[i][2] = (4LL * dp[i-1][2] % MOD + dp[i-1][1]) % MOD;
+    }
+
     while (t--) {
         solve();
     }
+
     return 0;
 }

@@ -96,17 +96,16 @@ int comnSuff(int a, int b) {
     return 30;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
-
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    int n;
+    cin >> n;
+    if((n-1)%3 == 0){
+        cout<<"YES\n";
     }
+    else{
+        cout<<"NO\n";
+    }
+    return;
 }
 
 signed main() {

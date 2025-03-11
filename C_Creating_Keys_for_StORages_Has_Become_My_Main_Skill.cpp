@@ -96,16 +96,64 @@ int comnSuff(int a, int b) {
     return 30;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
-
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    int n,x;
+    cin >> n >> x;
+    
+    if (n == 1) {
+        cout << x << "\n";
+        return;
+    }
+    
+    int i = 0;
+    while (i < 31 && (x & (1u << i))) i++;
+    int m_val = 1 << i;
+    int bestL = 0;
+    int upper = min(m_val, n);
+    
+    for (int L = 1; L <= upper; L++) {
+        int prefix_or;
+        if (L == 1) {
+            prefix_or = 0;
+        } else if ((L & (L - 1)) == 0) {
+            prefix_or = L - 1;
+        } else {
+            int k = 32 - __builtin_clz(L);
+            prefix_or = (1 << k) - 1;
+        }
+        
+        int extra = ((x & (~prefix_or)) != 0) ? 1 : 0;
+        if (L + extra <= n)
+            bestL = L;
+    }
+    
+    vector<int> distinct;
+    for (int j = 0; j < bestL; j++) {
+        distinct.push_back(j);
+    }
+    
+    int prefix_or;
+    if (bestL == 1) {
+        prefix_or = 0;
+    } else if ((bestL & (bestL - 1)) == 0) {
+        prefix_or = bestL - 1;
+    } else {
+        int k = 32 - __builtin_clz(bestL);
+        prefix_or = (1 << k) - 1;
+    }
+    
+    if ((x & (~prefix_or)) != 0) {
+        int missing = x & (~prefix_or);
+        distinct.push_back(missing);
+    }
+    
+    vector<int> ans = distinct;
+    while (ans.size() < static_cast<size_t>(n)) {
+        ans.push_back(0);
+    }
+    
+    for (int j = 0; j < n; j++) {
+        cout << ans[j] << (j + 1 == n ? "\n" : " ");
     }
 }
 

@@ -98,17 +98,33 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
+    int n;
+    cin>>n;
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    vector<string> grid(n);
+    for(auto &a:grid)cin>>a;
+
+    vvi dp(n,vi(n,0));
+    if(grid[0][0]=='*' || grid[n-1][n-1]=='*'){
+        cout<<"0\n";
+        return;
     }
-}
+    dp[0][0]=1;
 
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(grid[i][j]=='*')continue;
+            if(i > 0)
+                dp[i][j] = (dp[i][j] + dp[i-1][j]) % MOD;
+            if(j > 0)
+                dp[i][j] = (dp[i][j] + dp[i][j-1]) % MOD;
+        
+        }
+    }
+
+    cout<<dp[n-1][n-1]%MOD<<"\n";
+    return;
+}
 signed main() {
     // cout << fixed << setprecision(10);
     ios_base::sync_with_stdio(false);
@@ -116,7 +132,7 @@ signed main() {
     cout.tie(nullptr);
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) {
         solve();
     }

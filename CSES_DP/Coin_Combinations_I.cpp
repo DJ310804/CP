@@ -98,15 +98,25 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    int n, x;
+    cin >> n >> x;
+    
+    vector<int> coins(n);
+    for (auto &coin : coins)
+        cin >> coin;
+    
+    vector<int> dp(x+1, 0);
+    dp[0] = 1;  
+    
+    for (int sum = 1; sum <= x; sum++) {
+        for (int coin : coins) {
+            if (sum - coin >= 0) {
+                dp[sum] = (dp[sum] + dp[sum - coin]) % MOD;
+            }
+        }
     }
+    
+    cout << dp[x] << "\n";
 }
 
 signed main() {
@@ -116,7 +126,7 @@ signed main() {
     cout.tie(nullptr);
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) {
         solve();
     }

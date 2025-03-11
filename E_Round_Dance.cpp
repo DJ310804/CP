@@ -98,15 +98,12 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
+    int n;
+    cin >> n;
     vi v(n);
     for (auto &i : v) cin >> i;
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
-    }
+    
 }
 
 signed main() {

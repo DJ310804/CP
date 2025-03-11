@@ -98,15 +98,29 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
+    int n;
+    cin >> n;
     vi v(n);
     for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    pair<int,int> ans={1,1};
+    int mans=-1;
+    for(int i=0;i<n;i++){
+        int c=0,b=0;
+        for(int j=i+1;j<n;j++){ 
+            if(v[j] < v[i]){
+                c++;
+            }
+            else if(v[j] > v[i]){
+                b++;
+            }
+            if(mans < (c-b)){
+                ans={i+1,j+1};
+                mans=c-b;
+            }
+        }
     }
+    cout<<ans.first<<" "<<ans.second<<"\n";
+    return;
 }
 
 signed main() {

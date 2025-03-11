@@ -98,24 +98,26 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,x;
-    cin >> n >>x;
-    vi v(n);
-    for (auto &i : v) cin >> i;
+    int n, x;
+    cin >> n >> x;
+    vi pages(n,0);
+    vi price(n,0);
+    for(auto &a:price)cin>>a;
+    for(auto &a:pages)cin>>a;
 
-    // dp[i] : min coins req for i 
-    // ans=min(ans,1+dp[i-v[j]])
-    // dp[0]=1;
-    vi dp(x+1,INT_MAX);
-    dp[0]=0;
-    for(int i=1;i<=x;i++){
-        for(int j=0;j<n;j++){
-            if(i>=v[j])
-                dp[i]=min(dp[i],1+dp[i-v[j]]);
+    vi prev(x+1,0);
+    vi curr(x+1,0);
+
+    for(int i=1;i<=n;i++){
+        for(int j=0;j<=x;j++){
+            curr[j]=prev[j];
+            if(j>=price[i-1]){
+                curr[j]=max(curr[j],pages[i-1]+prev[j-price[i-1]]);
+            }
         }
+        prev=curr;
     }
-    if(dp[x]==INT_MAX ? dp[x]=-1 : dp[x]=dp[x])
-    cout<<dp[x]<<"\n";
+    cout<<prev[x]<<"\n";
     return;
 }
 

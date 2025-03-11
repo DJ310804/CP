@@ -98,16 +98,56 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    int n;
+    cin >> n;
+    int sz = 2 * n;
+    vector<ll> b(sz);
+    for (int i = 0; i < sz; i++) {
+        cin >> b[i];
     }
+    sort(b.begin(), b.end());
+
+    ll sumOdd = accumulate(b.begin(), b.begin() + n, 0LL);
+    ll sumEven = accumulate(b.begin() + n, b.end(), 0LL);
+    ll x = sumEven - sumOdd;
+
+    if (x > 0 && !binary_search(b.begin(), b.end(), x)) {
+        cout << x << " ";
+        for (int i = 0; i < n; i++) {
+            cout << b[n + i] << " " << b[i] << " ";
+        }
+        cout << "\n";
+        return;
+    }
+
+    for (int i = max(0, n - 20); i < n; i++) {
+        for (int j = n; j < min(sz, n + 20); j++) {
+            ll candidate_x = x - 2LL * (b[j] - b[i]);
+            if (candidate_x > 0 && !binary_search(b.begin(), b.end(), candidate_x)) {
+                swap(b[i], b[j]);
+                ll newSumOdd = accumulate(b.begin(), b.begin() + n, 0LL);
+                ll newSumEven = accumulate(b.begin() + n, b.end(), 0LL);
+                if (newSumEven - newSumOdd == candidate_x) {
+                    cout << candidate_x << " ";
+                    for (int k = 0; k < n; k++) {
+                        cout << b[n + k] << " " << b[k] << " ";
+                    }
+                    cout << "\n";
+                    return;
+                }
+                swap(b[i], b[j]);
+            }
+        }
+    }
+
+    cout << x << " ";
+    for (int i = 0; i < n; i++) {
+        cout << b[n + i] << " " << b[i] << " ";
+    }
+    cout << "\n";
 }
+
+
 
 signed main() {
     // cout << fixed << setprecision(10);

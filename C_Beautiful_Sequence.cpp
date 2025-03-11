@@ -8,7 +8,7 @@ using namespace __gnu_pbds;
 
 #define int long long
 
-constexpr int MOD = 998244353;
+constexpr int MOD = 1000000007;
 constexpr int INF = 0x7fffffffffffffff;
 
 using pii = pair<int, int>;
@@ -96,44 +96,11 @@ int comnSuff(int a, int b) {
     return 30;
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
-
 void solve() {
     int n;
     cin >> n;
-    vector<int> v(n);
-    for (auto &i : v) cin >> i;
-
-    vector<int> f(n, 0);
-    vector<int> pth; 
-    vector<int> po;  
-
-    for (int i = 0; i < n; i++) {
-        if (v[i] == 1) {
-            po.push_back(i);
-        } else if (v[i] == 3) {
-            pth.push_back(i);
-        }
-        if((v[i] == 2))f[i] = 1;
-        if (i > 0)f[i] += f[i - 1];
-    }
-
-    int ans = 0;
-
-    for (int pone : po) {
-        for (int j = pth.size() - 1; j >= 0; j--) {
-            int poth = pth[j];
-            if (poth <= pone + 1)
-                continue; 
-
-            int diff = f[poth - 1] - f[pone]; 
-            if (diff <= 0)
-                continue;
-
-            ans = (ans + (mod_pow(2, diff, MOD) - 1 + MOD) % MOD) % MOD;
-        }
-    }
-
-    cout << ans << "\n";
+    // vi v(n);
+    // for (auto &i : v) cin >> i;
 }
 
 signed main() {

@@ -98,15 +98,15 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
-    vi v(n);
-    for (auto &i : v) cin >> i;
-
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    int n,k,p;
+    cin >> n>>k>>p;
+    if(k<0)k*=-1;
+    int ans=k/p + (k%p ? 1:0);
+    if(ans<=n){
+        cout<<ans<<"\n";
     }
+    else cout<<"-1\n";
+    return;
 }
 
 signed main() {

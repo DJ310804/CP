@@ -100,51 +100,53 @@ int comnSuff(int a, int b) {
 void solve() {
     int n;
     cin >> n;
-    vi mp(n,0); // indegree
-    vector<string> v(n);
-    for(auto &s:v)cin>>s;
-
-    vector<int> adj[n];
-    
+    vector<vector<char>> v(n,vector<char>(n));
     for(int i=0;i<n;i++){
-        for(int j=0;j<i;j++){
-            if(v[i][j] == '1'){
-                mp[i]++;
-                adj[j].push_back(i);
-            }
+        for(int j=0;j<n;j++){
+            cin>>v[i][j];
         }
     }
-    // printContainer(mp);
-    
-    queue<int> q;
-    for(int i=n-1;i>-1;i--){
-        if(mp[i]==0)q.push(i);
-    }
 
-    vi visited(n,0);
-    vi ans;
+    deque<int> dq;
+    stack<int> t;
+    dq.push_back(n);
 
-    while(!q.empty()){
-        int nq=q.size();
-        vi temp;
-        while(nq--){
-            int t=q.front();
-            q.pop();
-            temp.push_back(t+1);
-            visited[t]=1;
-            for(auto &a:adj[t]){
-                if(!visited[a]){
-                    mp[a]--;
-                    if(mp[a]==0){
-                        q.push(a);
-                    }
-                }
+    for(int i=n-1;i>0;i--){
+        if(dq.empty()){
+            dq.push_front(i);
+            while(!t.empty()){
+                int f=t.top();
+                t.pop();
+                dq.push_front(f);
+            }
+            continue;
+        }
+        int tp=dq.front();
+        if(v[i-1][tp-1]=='1'){
+            dq.push_front(i);
+            while(!t.empty()){
+                int f=t.top();
+                t.pop();
+                dq.push_front(f);
             }
         }
-        sort(temp.rbegin(),temp.rend());
-        for(auto &a:temp)ans.push_back(a);
+        else{
+            t.push(tp);
+            dq.pop_front();
+            i++;
+        }
+
+        // cout<<i<<" -> ";
+        // for(auto &a:dq){
+        //     cout<<a<<" ";
+        // }
+        // cout<<"\n";
     }
-    printContainer(ans);
+    while(!dq.empty()){
+        cout<<dq.front()<<" ";
+        dq.pop_front();
+    }
+    cout<<"\n";
     return;
 }
 

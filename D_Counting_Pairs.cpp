@@ -98,15 +98,27 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
+    int n,x,y;
+    cin >> n>>x>>y;
     vi v(n);
     for (auto &i : v) cin >> i;
+    int sum=accumulate(v.begin(),v.end(),0LL);
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    // y >= sum-(al+ar) >= x
+    // count of l,r ?
+
+    sort(v.begin(),v.end());
+    int ans=0;
+    for(int i=0;i<n;i++){
+        int l=v[i];
+
+        int t1=lower_bound(v.begin()+i+1,v.end(),sum-l-y)-v.begin();
+        int t2=upper_bound(v.begin()+i+1,v.end(),sum-l-x)-v.begin();
+        
+        if(t2>t1)ans+=(t2-t1);
     }
+    cout<<ans<<"\n";
+    return;
 }
 
 signed main() {

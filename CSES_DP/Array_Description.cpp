@@ -98,16 +98,44 @@ int comnSuff(int a, int b) {
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 
 void solve() {
-    int n,q;
-    cin >> n>>q;
+    int n, m;
+    cin >> n >> m;
     vi v(n);
-    for (auto &i : v) cin >> i;
+    for (auto &x : v) 
+        cin >> x;
+    
+    vvi dp(n,vi(m+1,0));
 
-    for(int i=0;i<q;i++){
-        int l,r;
-        cin>>l>>r;
+    if(v[0] == 0) {
+        for(int j = 1; j <= m; j++) {
+            dp[0][j] = 1;
+        }
+    } else {
+        dp[0][v[0]] = 1;
     }
+
+    for(int i = 1; i < n; i++) {
+        for(int j = 1; j <= m; j++){
+            if(v[i] != 0 && v[i] != j) continue;
+            int sum = 0;
+            if(j > 1) {
+                sum += dp[i-1][j-1];
+            }
+            sum += dp[i-1][j];
+            if(j < m) {
+                sum += dp[i-1][j+1];
+            }
+            dp[i][j] = sum % MOD;
+        }
+    }
+
+    int ans = 0;
+    for(int j = 1; j <= m; j++) {
+        ans = (ans + dp[n-1][j]) % MOD;
+    }
+    cout << ans << "\n";
 }
+
 
 signed main() {
     // cout << fixed << setprecision(10);
@@ -116,7 +144,7 @@ signed main() {
     cout.tie(nullptr);
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) {
         solve();
     }
